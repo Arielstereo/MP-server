@@ -1,4 +1,5 @@
 import {User} from '../models/User.js'
+import {Notification} from '../models/Notifications.js'
 
 export const transfers = async (req, res) => {
   try {
@@ -83,5 +84,45 @@ export const enterCash = async (req, res) => {
     })
   } catch (error) {
     console.log(error);
+  }
+}
+
+export const createNotification = async (req, res) => {
+  try {
+    const {sender, receiver, message, date} = req.body
+
+    const notification = new Notification ({
+      sender,
+      receiver,
+      message,
+      date
+    })
+
+    await notification.save()
+    res.status(200).json({
+      status: 'success',
+      sender: `${sender}`,
+      receiver: `${receiver}`,
+      message: `${message}`,
+      date: `${date}`
+
+    })
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export const getNotifications = async (req, res) => {
+  try {
+    const id = req.params.id
+    
+    const notifications = await Notification.find({receiver: id})
+    .sort({date: -1})
+    .populate('sender', 'username lastName')
+   
+    res.status(200).json(notifications)
+
+  } catch (error) {
+    console.log(error)
   }
 }
