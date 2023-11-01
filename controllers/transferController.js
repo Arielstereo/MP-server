@@ -117,7 +117,6 @@ export const getNotifications = async (req, res) => {
     const id = req.params.id
     
     const notifications = await Notification.find({receiver: id})
-    .sort({date: -1})
     .populate('sender', 'username lastName')
    
     res.status(200).json(notifications)
